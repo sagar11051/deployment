@@ -22,7 +22,7 @@ const MoodSelector = ({
   onMoodSelect = () => {},
   selectedMood = "",
 }: MoodSelectorProps) => {
-  const [selected, setSelected] = useState<string>(selectedMood);
+  const [selected, setSelected] = useState<string>(selectedMood ?? "");
 
   const moods: MoodOption[] = [
     {

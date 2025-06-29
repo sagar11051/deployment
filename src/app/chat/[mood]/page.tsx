@@ -79,21 +79,6 @@ const moodThemes = {
   },
 };
 
-// Utility functions for localStorage
-function getMoodHistory(mood: string): Message[] {
-  if (typeof window === "undefined") return [];
-  const data = localStorage.getItem(`chat_history_${mood}`);
-  return data ? JSON.parse(data) : [];
-}
-
-function setMoodHistory(mood: string, messages: Message[]) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(
-    `chat_history_${mood}`,
-    JSON.stringify(messages.slice(-5))
-  );
-}
-
 export default function ChatPage() {
   const params = useParams();
   const router = useRouter();
@@ -109,16 +94,6 @@ export default function ChatPage() {
     }
   }, [mood, router]);
 
-  // Load messages from localStorage when mood changes
-  useEffect(() => {
-    setMessages(getMoodHistory(mood));
-  }, [mood]);
-
-  // Save messages to localStorage whenever they change
-  useEffect(() => {
-    setMoodHistory(mood, messages);
-  }, [messages, mood]);
-
   // Function to handle sending messages
   const handleSendMessage = async (message: string) => {
     if (!message.trim()) return;
@@ -131,20 +106,13 @@ export default function ChatPage() {
       timestamp: new Date(),
     };
 
-    setMessages((prev) => {
-      const updated = [...prev, userMessage];
-      setMoodHistory(mood, updated);
-      return updated;
-    });
+    setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
 
     try {
-      // Only send last 5 messages as history
-      const history = [...messages, userMessage].slice(-5);
       const chatRequest: ChatRequest = {
         message,
         mood: mood,
-        history: history.map(({ id, ...rest }) => ({ ...rest })), // Remove id for backend, keep all other fields
       };
 
       const response = await fetch("/api/chat", {
@@ -166,11 +134,7 @@ export default function ChatPage() {
         timestamp: new Date(),
       };
 
-      setMessages((prev) => {
-        const updated = [...prev, assistantMessage];
-        setMoodHistory(mood, updated);
-        return updated;
-      });
+      setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error("Error sending message:", error);
 
@@ -183,11 +147,7 @@ export default function ChatPage() {
         timestamp: new Date(),
       };
 
-      setMessages((prev) => {
-        const updated = [...prev, errorMessage];
-        setMoodHistory(mood, updated);
-        return updated;
-      });
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }

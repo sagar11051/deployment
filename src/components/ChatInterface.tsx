@@ -11,10 +11,15 @@ import { Message } from "@/types/message";
 import { MoodType } from "@/types/message";
 
 interface ChatInterfaceProps {
-  selectedMood?: string;
+  selectedMood?: MoodType;
   onSendMessage?: (message: string) => Promise<void>;
   isLoading?: boolean;
   messages?: Message[];
+}
+
+interface MoodSelectorProps {
+  onMoodSelect: (mood: MoodType) => void;
+  selectedMood?: MoodType | null;
 }
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({

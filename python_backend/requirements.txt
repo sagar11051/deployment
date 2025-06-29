@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+langchain-core
+langchain-google-genai
+langchain-ollama
+ollama
+python-dotenv
+requests
+typing-extensions

@@ -94,7 +94,6 @@ const MoodSelector = ({
                 backgroundColor: mood.bgColor,
                 borderColor: mood.color,
                 color: mood.color,
-                ringColor: selected === mood.id ? mood.color : undefined,
               }}
               onClick={() => handleMoodSelect(mood.id)}
             >
